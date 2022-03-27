@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-
 /** 
                                @                            
                               @@@                          
@@ -30,8 +29,10 @@
               @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            
                       @@@@@@@@@@@@@@@@@@@ 
 */
-
 // Amended by AyyyliensNFT
+
+// File: @openzeppelin/contracts/utils/Context.sol
+// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
 
 pragma solidity ^0.8.0;
 
@@ -55,9 +56,10 @@ abstract contract Context {
     }
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+// File: @openzeppelin/contracts/access/Ownable.sol
 
 
+// OpenZeppelin Contracts v4.4.1 (access/Ownable.sol)
 
 pragma solidity ^0.8.0;
 
@@ -132,11 +134,12 @@ abstract contract Ownable is Context {
     }
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol
+// File: @openzeppelin/contracts/utils/Address.sol
 
 
+// OpenZeppelin Contracts (last updated v4.5.0) (utils/Address.sol)
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.1;
 
 /**
  * @dev Collection of functions related to the address type
@@ -158,17 +161,22 @@ library Address {
      *  - an address where a contract will be created
      *  - an address where a contract lived, but was destroyed
      * ====
+     *
+     * [IMPORTANT]
+     * ====
+     * You shouldn't rely on `isContract` to protect against flash loan attacks!
+     *
+     * Preventing calls from contracts is highly discouraged. It breaks composability, breaks support for smart wallets
+     * like Gnosis Safe, and does not provide security since it can be circumvented by calling from a contract
+     * constructor.
+     * ====
      */
     function isContract(address account) internal view returns (bool) {
-        // This method relies on extcodesize, which returns 0 for contracts in
-        // construction, since the code is only stored at the end of the
-        // constructor execution.
+        // This method relies on extcodesize/address.code.length, which returns 0
+        // for contracts in construction, since the code is only stored at the end
+        // of the constructor execution.
 
-        uint256 size;
-        assembly {
-            size := extcodesize(account)
-        }
-        return size > 0;
+        return account.code.length > 0;
     }
 
     /**
@@ -351,9 +359,10 @@ library Address {
     }
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/introspection/IERC165.sol
+// File: @openzeppelin/contracts/utils/introspection/IERC165.sol
 
 
+// OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)
 
 pragma solidity ^0.8.0;
 
@@ -378,9 +387,10 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/introspection/ERC165.sol
+// File: @openzeppelin/contracts/utils/introspection/ERC165.sol
 
 
+// OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
 
 pragma solidity ^0.8.0;
 
@@ -408,9 +418,10 @@ abstract contract ERC165 is IERC165 {
     }
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/IERC1155Receiver.sol
+// File: @openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol
 
 
+// OpenZeppelin Contracts (last updated v4.5.0) (token/ERC1155/IERC1155Receiver.sol)
 
 pragma solidity ^0.8.0;
 
@@ -420,18 +431,20 @@ pragma solidity ^0.8.0;
  */
 interface IERC1155Receiver is IERC165 {
     /**
-        @dev Handles the receipt of a single ERC1155 token type. This function is
-        called at the end of a `safeTransferFrom` after the balance has been updated.
-        To accept the transfer, this must return
-        `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
-        (i.e. 0xf23a6e61, or its own function selector).
-        @param operator The address which initiated the transfer (i.e. msg.sender)
-        @param from The address which previously owned the token
-        @param id The ID of the token being transferred
-        @param value The amount of tokens being transferred
-        @param data Additional data with no specified format
-        @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` if transfer is allowed
-    */
+     * @dev Handles the receipt of a single ERC1155 token type. This function is
+     * called at the end of a `safeTransferFrom` after the balance has been updated.
+     *
+     * NOTE: To accept the transfer, this must return
+     * `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
+     * (i.e. 0xf23a6e61, or its own function selector).
+     *
+     * @param operator The address which initiated the transfer (i.e. msg.sender)
+     * @param from The address which previously owned the token
+     * @param id The ID of the token being transferred
+     * @param value The amount of tokens being transferred
+     * @param data Additional data with no specified format
+     * @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` if transfer is allowed
+     */
     function onERC1155Received(
         address operator,
         address from,
@@ -441,18 +454,21 @@ interface IERC1155Receiver is IERC165 {
     ) external returns (bytes4);
 
     /**
-        @dev Handles the receipt of a multiple ERC1155 token types. This function
-        is called at the end of a `safeBatchTransferFrom` after the balances have
-        been updated. To accept the transfer(s), this must return
-        `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
-        (i.e. 0xbc197c81, or its own function selector).
-        @param operator The address which initiated the batch transfer (i.e. msg.sender)
-        @param from The address which previously owned the token
-        @param ids An array containing ids of each token being transferred (order and length must match values array)
-        @param values An array containing amounts of each token being transferred (order and length must match ids array)
-        @param data Additional data with no specified format
-        @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` if transfer is allowed
-    */
+     * @dev Handles the receipt of a multiple ERC1155 token types. This function
+     * is called at the end of a `safeBatchTransferFrom` after the balances have
+     * been updated.
+     *
+     * NOTE: To accept the transfer(s), this must return
+     * `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
+     * (i.e. 0xbc197c81, or its own function selector).
+     *
+     * @param operator The address which initiated the batch transfer (i.e. msg.sender)
+     * @param from The address which previously owned the token
+     * @param ids An array containing ids of each token being transferred (order and length must match values array)
+     * @param values An array containing amounts of each token being transferred (order and length must match ids array)
+     * @param data Additional data with no specified format
+     * @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` if transfer is allowed
+     */
     function onERC1155BatchReceived(
         address operator,
         address from,
@@ -462,9 +478,10 @@ interface IERC1155Receiver is IERC165 {
     ) external returns (bytes4);
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/IERC1155.sol
+// File: @openzeppelin/contracts/token/ERC1155/IERC1155.sol
 
 
+// OpenZeppelin Contracts v4.4.1 (token/ERC1155/IERC1155.sol)
 
 pragma solidity ^0.8.0;
 
@@ -588,9 +605,10 @@ interface IERC1155 is IERC165 {
     ) external;
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol
+// File: @openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol
 
 
+// OpenZeppelin Contracts v4.4.1 (token/ERC1155/extensions/IERC1155MetadataURI.sol)
 
 pragma solidity ^0.8.0;
 
@@ -611,9 +629,10 @@ interface IERC1155MetadataURI is IERC1155 {
     function uri(uint256 id) external view returns (string memory);
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC1155/ERC1155.sol
+// File: @openzeppelin/contracts/token/ERC1155/ERC1155.sol
 
 
+// OpenZeppelin Contracts v4.4.1 (token/ERC1155/ERC1155.sol)
 
 pragma solidity ^0.8.0;
 
@@ -1076,52 +1095,129 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     }
 }
 
+// File: @openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol
+
+
+// OpenZeppelin Contracts v4.4.1 (token/ERC1155/extensions/ERC1155Supply.sol)
+
 pragma solidity ^0.8.0;
 
-//interface IERC1155 {
- // function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes calldata data) external;
-//}
 
-contract KarmeleonsArt is ERC1155, Ownable {
-    
-  string public name;
-  string public symbol;
+/**
+ * @dev Extension of ERC1155 that adds tracking of total supply per id.
+ *
+ * Useful for scenarios where Fungible and Non-fungible tokens have to be
+ * clearly identified. Note: While a totalSupply of 1 might mean the
+ * corresponding is an NFT, there is no guarantees that no other token with the
+ * same id are not going to be minted.
+ */
+abstract contract ERC1155Supply is ERC1155 {
+    mapping(uint256 => uint256) private _totalSupply;
 
-  mapping(uint => string) public tokenURI;
+    /**
+     * @dev Total amount of tokens in with a given id.
+     */
+    function totalSupply(uint256 id) public view virtual returns (uint256) {
+        return _totalSupply[id];
+    }
 
-  constructor() ERC1155("") {
-    name = "Karmeleons Art";
-    symbol = "KMLNART";
-  }
+    /**
+     * @dev Indicates whether any token exist with a given id, or not.
+     */
+    function exists(uint256 id) public view virtual returns (bool) {
+        return ERC1155Supply.totalSupply(id) > 0;
+    }
+
+    /**
+     * @dev See {ERC1155-_beforeTokenTransfer}.
+     */
+    function _beforeTokenTransfer(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) internal virtual override {
+        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
+
+        if (from == address(0)) {
+            for (uint256 i = 0; i < ids.length; ++i) {
+                _totalSupply[ids[i]] += amounts[i];
+            }
+        }
+
+        if (to == address(0)) {
+            for (uint256 i = 0; i < ids.length; ++i) {
+                _totalSupply[ids[i]] -= amounts[i];
+            }
+        }
+    }
+}
+
+// File: contracts/airdrop.sol
+
+pragma solidity ^0.8.2;
 
 
-  function mint(address _to, uint _id, uint _amount) external onlyOwner {
-    _mint(_to, _id, _amount, "");
-  }
 
-  function mintBatch(address _to, uint[] memory _ids, uint[] memory _amounts) external onlyOwner {
-    _mintBatch(_to, _ids, _amounts, "");
-  }
 
-  function burn(uint _id, uint _amount) external {
-    _burn(msg.sender, _id, _amount);
-  }
+contract KarmeleonsArt is ERC1155, ERC1155Supply, Ownable {
+    string public name;
+    string public symbol;
+    constructor(string memory _uri) ERC1155(_uri) {
+        _setURI(_uri);
+        name = "Karmeleons Art";
+        symbol = "KMLNART";
+    }
 
-  function burnBatch(uint[] memory _ids, uint[] memory _amounts) external {
-    _burnBatch(msg.sender, _ids, _amounts);
-  }
+    /// @dev set the URI to your base URI here, don't forget the {id} param.
+    function setURI(string memory newuri) external onlyOwner {
+        _setURI(newuri);
+    }
 
-  function burnForMint(address _from, uint[] memory _burnIds, uint[] memory _burnAmounts, uint[] memory _mintIds, uint[] memory _mintAmounts) external onlyOwner {
-    _burnBatch(_from, _burnIds, _burnAmounts);
-    _mintBatch(_from, _mintIds, _mintAmounts, "");
-  }
+    /**
+     * @notice Airdrop a token to multiple addresses at once.
+     * No strict supply is set in the contract. All methods are ownerOnly,
+     * it is up to the owner to control the supply by not minting
+     * past their desired number for each token.
+     * @dev Airdrop one token to each address in the calldata list,
+     * setting the supply to the length of the list + previously minted (airdropped) supply. Add an addess once per
+     * token you would like to send.
+     * @param _dropNumber The tokenID to send
+     * @param _list address[] list of wallets to send 1 token to, each.
+     */
+    function airdrop(uint256 _dropNumber, address[] calldata _list)
+        external
+        onlyOwner
+    {
+        for (uint256 i = 0; i < _list.length; i++) {
+            _mint(_list[i], _dropNumber, 1, "");
+        }
+    }
 
-  function setURI(uint _id, string memory _uri) external onlyOwner {
-    tokenURI[_id] = _uri;
-    emit URI(_uri, _id);
-  }
+    /**
+     * @notice Sends multiple tokens to a single address
+     * @param _tokenID The address to receive the tokens
+     * @param _address The address to receive the tokens
+     * @param _quantity How many to send she receiver
+     */
+    function batchMint(
+        uint256 _tokenID,
+        address _address,
+        uint256 _quantity
+    ) external onlyOwner {
+        _mint(_address, _tokenID, _quantity, "");
+    }
 
-  function uri(uint _id) public override view returns (string memory) {
-    return tokenURI[_id];
-  }
+    function _beforeTokenTransfer(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) internal override(ERC1155, ERC1155Supply) {
+        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
+    }
 }
