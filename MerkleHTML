@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Merkletree</title>
+        <script src="https://cdn.jsdelivr.net/npm/merkletreejs@latest/merkletree.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/keccak256@latest/keccak256.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+        const addresses = ["0x3bde7c9a700c66dca8924930e966044bb737a998","0x43f569adb12f11deee2cd7d2d3917a087ac885f8","0x5bce7812cf794ce2f3a05433c9ef596e3ec2815b","0x62a87bd0d3752e6583a59150c437a6111f8925de","0x679d5162bad71990abca0f18095948c12a2756b0","0x6cbbb8e1497db75fa3b215327a1dd6428f14a947","0x75faac3fb8dfcbd222767cb1a1d8477a999875a4","0x8592aec589b254ce71a09c2ed1e6bad86069bcfc","0x88c8c0ddd49cdf3e0c26add290c2e63ed1ed8a0e","0xe265ac4ae2d427f756080270b8b055d981d03522","0xf2010f1b6379c7524aa32cd8ee1acf936f85b01a","0xe5f0fc858ae0010aa3a9f7038cdd0c50bf0dc827","0xb501e46d0e187cd9e2e0b3611fe17ed477f998e1","0x3a8a7504c98b7bbdb9c6b4205f8395c10581af37","0x102f45ccc811f9d718f3a07277a9c9D1616A6Afe","0x464C0298a4B4f6c9B1978Cf8353e63f384bC5914"]
+        const leaves = addresses.map(x => keccak256(x))
+        const tree = new MerkleTree(leaves, keccak256, { sortPairs: true})
+        const buf2hex = x => "0x" + x.toString("hex")
+
+        console.log(buf2hex(tree.getRoot()))
+
+        //const leaf = keccak256(msg.sender)
+        //address = keccack256(msg.sender)
+        //const proof = tree.getProof(keccak256(address)).map(x => buf2hex(x.data))
+
+        //contract.methods.publicMint(address, proof).send({})
+        </script>
+        
+    </body>
+</html>
