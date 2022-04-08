@@ -1283,6 +1283,7 @@ contract BrutusChimpClub is ERC721, Ownable {
   uint256 public ALLOW_LIST_MINTS;
 
   bytes32 public MERKLE_ROOT;
+  bytes32[] public MERKLE_PROOF;
 
   mapping(address => uint8) private FREE_MINT_LIST;
   mapping(address => uint256) public MINTED_BALANCE;
@@ -1307,13 +1308,13 @@ contract BrutusChimpClub is ERC721, Ownable {
         _mintLoop(msg.sender, NUMBER_OF_TOKENS);       
     }
 
-    function publicMint(uint8 NUMBER_OF_TOKENS, bytes32[] calldata PROOF) public payable 
+    function publicMint(uint8 NUMBER_OF_TOKENS) public payable 
     mintCompliance(NUMBER_OF_TOKENS)
      
     {
         if (msg.sender != owner()) {
         if(onlyAllowList == true) {
-            isValidMerkleProof(PROOF);
+            isValidMerkleProof();
             uint256 NUMBER_MINTED = MINTED_BALANCE[msg.sender];
             require(NUMBER_MINTED + NUMBER_OF_TOKENS <= ALLOW_LIST_LIMIT, "max allowlist mints per address exceeded");
             require(NUMBER_OF_TOKENS + ALLOW_LIST_MINTS <= ALLOW_LIST_SUPPLY, "Max supply of allowlist mints claimed");
@@ -1339,10 +1340,10 @@ contract BrutusChimpClub is ERC721, Ownable {
       _safeMint(RECEIVER, supply.current());
     }}
 
-    function isValidMerkleProof(bytes32[] calldata PROOF) public view {
+    function isValidMerkleProof() public view {
         require(
         MerkleProof.verify
-        (PROOF, MERKLE_ROOT, keccak256(abi.encodePacked(msg.sender)))
+        (MERKLE_PROOF, MERKLE_ROOT, keccak256(abi.encodePacked(msg.sender)))
         , "Address does not exist in allow list");
     }
 
@@ -1362,7 +1363,11 @@ contract BrutusChimpClub is ERC721, Ownable {
 
     function setMerkleRoot(bytes32 ROOT) public onlyOwner {
     MERKLE_ROOT = ROOT;
-    }    
+    }  
+
+    function setMerkleProof(bytes32[] calldata PROOF) public onlyOwner {
+    MERKLE_PROOF = PROOF;
+    }   
 
 // SALE FUNCTIONS -------------------------------------------------
 
