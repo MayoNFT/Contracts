@@ -1268,15 +1268,16 @@ contract BrutusChimpClub is ERC721, Ownable {
 
   Counters.Counter private supply;
 
-  bool public paused = true;
+  bool public paused = false;
   bool public revealed = false;
   bool public onlyAllowList = true;
+  bool public freeMintLive = false;
 
   uint256 public constant MAX_SUPPLY = 7;
   uint256 public MAX_PUBLIC_MINT = 5;
   uint256 public FREE_MINT_SUPPLY = 4;
   uint256 public ALLOW_LIST_LIMIT = 2;
-  uint256 public ALLOW_LIST_SUPPLY = 1000;
+  uint256 public ALLOW_LIST_SUPPLY = 3;
   uint256 public PRICE_PER_TOKEN = 0.00 ether;
   uint256 public REDEEMED_MINTS;
   uint256 public ALLOW_LIST_MINTS;
@@ -1284,7 +1285,7 @@ contract BrutusChimpClub is ERC721, Ownable {
   bytes32 public MERKLE_ROOT;
 
   mapping(address => uint8) private FREE_MINT_LIST;
-  mapping(address => uint8) public MINTED_BALANCE;
+  mapping(address => uint256) public MINTED_BALANCE;
 
   string public uriPrefix = "";
   string public uriSuffix = ".json";
@@ -1298,10 +1299,11 @@ contract BrutusChimpClub is ERC721, Ownable {
 // MINT FUNCTIONS -------------------------------------------------
 
   function freeMint(uint8 NUMBER_OF_TOKENS) external payable mintCompliance(NUMBER_OF_TOKENS) {
+        require(freeMintLive == true);
         require(NUMBER_OF_TOKENS <= FREE_MINT_LIST[msg.sender], "No free mints available");
         require(NUMBER_OF_TOKENS + REDEEMED_MINTS <= FREE_MINT_SUPPLY, "Max supply of free mints claimed"); 
         FREE_MINT_LIST[msg.sender] -= NUMBER_OF_TOKENS;
-        REDEEMED_MINTS = REDEEMED_MINTS + NUMBER_OF_TOKENS;
+        REDEEMED_MINTS += NUMBER_OF_TOKENS;
         _mintLoop(msg.sender, NUMBER_OF_TOKENS);       
     }
 
@@ -1311,11 +1313,12 @@ contract BrutusChimpClub is ERC721, Ownable {
     {
         if (msg.sender != owner()) {
         if(onlyAllowList == true) {
-            isValidMerkleProof(PROOF, MERKLE_ROOT);
-            uint8 NUMBER_MINTED = MINTED_BALANCE[msg.sender];
-            require(NUMBER_OF_TOKENS + ALLOW_LIST_MINTS <= ALLOW_LIST_SUPPLY, "Max supply of allowlist mints claimed");
+            isValidMerkleProof(PROOF);
+            uint256 NUMBER_MINTED = MINTED_BALANCE[msg.sender];
             require(NUMBER_MINTED + NUMBER_OF_TOKENS <= ALLOW_LIST_LIMIT, "max allowlist mints per address exceeded");
-            MINTED_BALANCE[msg.sender] = NUMBER_MINTED + NUMBER_OF_TOKENS;  
+            require(NUMBER_OF_TOKENS + ALLOW_LIST_MINTS <= ALLOW_LIST_SUPPLY, "Max supply of allowlist mints claimed");
+            MINTED_BALANCE[msg.sender] += NUMBER_OF_TOKENS;
+            ALLOW_LIST_MINTS += NUMBER_OF_TOKENS;  
         }
         require(msg.value >= PRICE_PER_TOKEN * NUMBER_OF_TOKENS, "insufficient funds");
         require(NUMBER_OF_TOKENS <= MAX_PUBLIC_MINT, "Exceeded max token purchase");
@@ -1330,17 +1333,17 @@ contract BrutusChimpClub is ERC721, Ownable {
         require((msg.sender == tx.origin), "Contract buys not allowed");
     _;}
 
-    function _mintLoop(address _receiver, uint8 NUMBER_OF_TOKENS) internal {
+    function _mintLoop(address RECEIVER, uint8 NUMBER_OF_TOKENS) internal {
     for (uint8 i = 0; i < NUMBER_OF_TOKENS; i++) {
       supply.increment();
-      _safeMint(_receiver, supply.current());
+      _safeMint(RECEIVER, supply.current());
     }}
 
-    function isValidMerkleProof(bytes32[] calldata PROOF, bytes32 ROOT) public view {
+    function isValidMerkleProof(bytes32[] calldata PROOF) public view {
         require(
         MerkleProof.verify
-        (PROOF, ROOT, keccak256(abi.encodePacked(msg.sender)))
-        , "Address does not exist in list");
+        (PROOF, MERKLE_ROOT, keccak256(abi.encodePacked(msg.sender)))
+        , "Address does not exist in allow list");
     }
 
 
@@ -1355,6 +1358,10 @@ contract BrutusChimpClub is ERC721, Ownable {
 
     function setAllowListLimit(uint256 _limit) public onlyOwner {
     ALLOW_LIST_LIMIT = _limit;
+    }
+
+    function setMerkleRoot(bytes32 ROOT) public onlyOwner {
+    MERKLE_ROOT = ROOT;
     }    
 
 // SALE FUNCTIONS -------------------------------------------------
@@ -1373,7 +1380,11 @@ contract BrutusChimpClub is ERC721, Ownable {
 
     function setOnlyAllowList(bool _state) public onlyOwner {
     onlyAllowList = _state;
-  }
+    }
+
+    function setFreeMintLive(bool _state) public onlyOwner {
+    freeMintLive = _state;
+    }
 
 // PUBLIC FUNCTIONS -------------------------------------------------
 
