@@ -56,13 +56,13 @@ contract Karmz is ERC721, Ownable {
   }
 
   function mint(uint256 NUMBER_OF_TOKENS) public payable mintCompliance(NUMBER_OF_TOKENS) {
-        uint256 FREE_MINTS = IERC721(0xDC0Fc76A7E38B63e713773e9A44eF0D7867f7672).balanceOf(msg.sender);
+        uint256 FREE_MINTS = IERC721(0xD396706543979149f7510839E9EB0B0608E8bc23).balanceOf(msg.sender);
         uint256 TOKEN_COUNT = CLAIMED_MINTS[msg.sender];
     require(!paused, "The contract is paused!");
     require(FREE_MINTS >= 1, "You don't own any Karmeleons");
     require(TOKEN_COUNT + NUMBER_OF_TOKENS <= FREE_MINTS, "Max per free mint exceeded");
         for(uint i=0; i < FREE_MINTS; i++) {
-                uint256 TOKEN_ID = IERC721Enumerable(0xDC0Fc76A7E38B63e713773e9A44eF0D7867f7672).tokenOfOwnerByIndex(msg.sender, i);
+                uint256 TOKEN_ID = IERC721Enumerable(0xD396706543979149f7510839E9EB0B0608E8bc23).tokenOfOwnerByIndex(msg.sender, i);
                 require(BAN_HAMMER[TOKEN_ID] != true, "This Karmeleon has been banned from minting");}
     
         CLAIMED_MINTS[msg.sender] += NUMBER_OF_TOKENS;
