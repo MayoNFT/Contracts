@@ -54,7 +54,7 @@ contract Karmz is ERC721, Ownable {
   }
 
   function mint(uint256 NUMBER_OF_TOKENS) public payable mintCompliance(NUMBER_OF_TOKENS) {
-        uint256 FREE_MINTS = IERC721(0xDC0Fc76A7E38B63e713773e9A44eF0D7867f7672).balanceOf(msg.sender);
+        uint256 FREE_MINTS = IERC721(0xD396706543979149f7510839E9EB0B0608E8bc23).balanceOf(msg.sender);
         uint256 TOKEN_COUNT = CLAIMED_MINTS[msg.sender];
     require(!paused, "The contract is paused!");
     require(FREE_MINTS >= 1, "You don't own any Karmeleons");
@@ -92,7 +92,7 @@ contract Karmz is ERC721, Ownable {
     }
 
     function RemainingMINTS(address owner) external view returns (uint256) {
-        uint256 FREE_MINTS = IERC721(0xDC0Fc76A7E38B63e713773e9A44eF0D7867f7672).balanceOf(owner);
+        uint256 FREE_MINTS = IERC721(0xD396706543979149f7510839E9EB0B0608E8bc23).balanceOf(owner);
         uint256 REMAINING_MINTS = FREE_MINTS -= CLAIMED_MINTS[owner];
         return REMAINING_MINTS;
     }
