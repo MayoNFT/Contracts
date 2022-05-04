@@ -53,8 +53,8 @@ contract KarmeleonsFreeMint is ERC721, Ownable {
     for(uint i=0; i < FREE_MINTS; i++)
                 uint256 TOKEN_ID = IERC721Enumerable(0xDC0Fc76A7E38B63e713773e9A44eF0D7867f7672).tokenOfOwnerByIndex(msg.sender, i);
                 require(USED_TOKENS[TOKEN_ID] != true, "Tokens already claimed");
-                uint256 TOKEN_COUNT = CLAIMED_MINTS[msg.sender];
-                require(TOKEN_COUNT + NUMBER_OF_TOKENS <= FREE_MINTS, "max per free mint exceeded");
+                //uint256 TOKEN_COUNT = CLAIMED_MINTS[msg.sender];
+                //require(TOKEN_COUNT + NUMBER_OF_TOKENS <= FREE_MINTS, "max per free mint exceeded");
                 if(!USED_TOKENS[TOKEN_ID]) { // IF TOKEN NOT USED
                 USED_TOKENS[TOKEN_ID] = true;
                     
